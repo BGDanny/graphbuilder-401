@@ -38,13 +38,15 @@ import com.intel.hadoop.graphbuilder.types.StringType;
 /**
  * A runnable class that transforms a word count value into tfidf value on the
  * edge.
+ * 
  * @author Haijie Gu
-  */
+ */
 public class TransformToTFIDF {
   private static final Logger LOG = Logger.getLogger(TransformToTFIDF.class);
 
   /**
    * f : tf * df -> tfidf
+   * 
    * @author Haijie Gu
    *
    */
@@ -82,6 +84,7 @@ public class TransformToTFIDF {
 
   /**
    * f : x * y -> x + y
+   * 
    * @author Haijie Gu
    *
    */
@@ -115,8 +118,7 @@ public class TransformToTFIDF {
   /**
    * f : x * y -> x / y
    */
-  public final static class Dividefunc implements
-      Functional<IntType, FloatType> {
+  public final static class Dividefunc implements Functional<IntType, FloatType> {
 
     @Override
     public void configure(JobConf job) throws Exception {
@@ -146,11 +148,11 @@ public class TransformToTFIDF {
 
   /**
    * f : x * y -> y + 1
+   * 
    * @author Haijie Gu
    *
    */
-  public final static class FloatCountFunc implements
-      Functional<FloatType, FloatType> {
+  public final static class FloatCountFunc implements Functional<FloatType, FloatType> {
 
     @Override
     public void configure(JobConf job) throws Exception {
@@ -201,8 +203,7 @@ public class TransformToTFIDF {
     }
   }
 
-  class JobTFIDF extends
-      AbstractEdgeTransformJob<StringType, FloatType, FloatType> {
+  class JobTFIDF extends AbstractEdgeTransformJob<StringType, FloatType, FloatType> {
     public Class vidClass() {
       return StringType.class;
     }
@@ -220,16 +221,30 @@ public class TransformToTFIDF {
     }
   }
 
-  public static void main(String[] args) throws IOException, NotFoundException,
-      InstantiationException, IllegalAccessException, CannotCompileException {
+  class AbstractEdgeTransformJobFactory {
+    public AbstractEdgeTransformJob getJobType(String jobType) {
+      if (jobType == "JobTF") {
+        return new TransformToTFIDF().new JobTF();
+      } else if (jobType == "jobTFIDF") {
+        return new TransformToTFIDF().new JobTFIDF();
+      }
+    }
+    // new TransformToTFIDF().new JobTF()
+  }
+
+  public static void main(String[] args)
+      throws IOException, NotFoundException, InstantiationException, IllegalAccessException, CannotCompileException {
     String numDocs = args[0];
     String input = args[1];
     String output = args[2];
-
+    AbstractEdgeTransformJobFactory factory = new AbstractEdgeTransformJobFactory();
     LOG.info(" ================ Computing TF ===================");
-    JobTF job1 = new TransformToTFIDF().new JobTF();
+    String jobType = "JobTF";
+    AbstractEdgeTransformJob job1 = factory.getJobType(jobType);
     job1.run(EdgeTransformMR.SOURCE, input + "/edata", output + "/temp");
-    JobTFIDF job2 = new TransformToTFIDF().new JobTFIDF();
+    jobType = "JobTFIDF";
+    // AbstractEdgeTransformJob job2 = new TransformToTFIDF().new JobTFIDF();
+    AbstractEdgeTransformJob job2 = factory.getJobType(jobType);
     LOG.info(" ================== Compute TFIDF =======================");
     job2.addUserOpt("NumDocs", numDocs);
     job2.run(EdgeTransformMR.TARGET, output + "/temp", output + "/edata");
@@ -242,4 +257,5 @@ public class TransformToTFIDF {
       e.printStackTrace();
     }
   }
+
 }
