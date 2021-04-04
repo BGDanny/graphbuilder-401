@@ -35,110 +35,144 @@ import java.util.Iterator;
  */
 public class EdgeList implements Iterable<EdgeType> {
 
-  /** Default constructor. Creates an empty edge list. */
-  public EdgeList() {
-    this.store = null;
-    this.begin = -1;
-    this.end = -1;
-    this.dir = EdgeType.DIR.EMPTY;
-  }
+	/** Default constructor. Creates an empty edge list. */
+	public EdgeList() {
+		this.store = null;
+		this.begin = -1;
+		this.end = -1;
+		this.dir = EdgeType.DIR.EMPTY;
+	}
 
-  /**
-   * Construct an EdgeList containing all edges in the {@code SparseGraphStruct}
-   * that are incoming (outgoing) edges with respect to the given vertex. The
-   * direction is determined by the parameter {@code dir}.
-   * 
-   * @param vid
-   *          the center vertex id.
-   * @param store
-   *          the backend storage of all edges.
-   * @param dir
-   *          the direction of edges with respect to the center vertex.
-   */
-  public EdgeList(int vid, SparseGraphStruct store, EdgeType.DIR dir) {
-    this.store = store;
-    this.center = vid;
-    this.begin = store.begin(vid);
-    this.end = store.end(vid);
-    this.dir = dir;
-  }
+	/**
+	 * Construct an EdgeList containing all edges in the {@code SparseGraphStruct}
+	 * that are incoming (outgoing) edges with respect to the given vertex. The
+	 * direction is determined by the parameter {@code dir}.
+	 * 
+	 * @param vid   the center vertex id.
+	 * @param store the backend storage of all edges.
+	 * @param dir   the direction of edges with respect to the center vertex.
+	 */
+	public EdgeList(int vid, SparseGraphStruct store, EdgeType.DIR dir) {
+		this.store = store;
+		this.center = vid;
+		this.begin = store.begin(vid);
+		this.end = store.end(vid);
+		this.dir = dir;
+	}
 
-  /**
-   * @return the size of the list.
-   */
-  public int size() {
-    return end - begin;
-  }
+	public static class Builder {
 
-  /**
-   * @return wheter the list is empty.
-   */
-  public boolean isEmpty() {
-    return size() == 0;
-  }
+		/** Index of the center vertex in the storage. */
+		int center;
 
-  @Override
-  public Iterator<EdgeType> iterator() {
-    return new EdgeIterator(this);
-  }
+		// Optional
+		/** The begin and end index indicating the range of the edges. */
+		int begin = -1, end = -1;
+		/** The direction of the edges with respect to the center vertex. */
+		EdgeType.DIR dir = EdgeType.DIR.EMPTY;;
+		/** The back end dense storage of the edges. */
+		SparseGraphStruct store = null;
 
-  /**
-   * This iterator iterates lazily over the {@code EdgeList}.
-   * 
-   * @author Haijie Gu
-   */
-  public class EdgeIterator implements Iterator<EdgeType> {
-    /** Create an the begin iterator of the list. */
-    EdgeIterator(EdgeList list) {
-      this.list = list;
-      this.cur = list.begin;
-    }
+		public Builder center(int center) {
+			this.center = center;
+			return this;
+		}
 
-    @Override
-    public final boolean hasNext() {
-      return (list != null && cur < list.end);
-    }
+		public Builder begin(int begin) {
+			this.begin = begin;
+			return this;
+		}
 
-    @Override
-    public final EdgeType next() {
-      EdgeType ret = new EdgeType(list.center, list.store.getColIndex()
-          .get(cur), cur, list.dir);
-      ++cur;
-      return ret;
-    }
+		public Builder store(SparseGraphStruct store) {
+			this.store = store;
+			return this;
+		}
 
-    @Override
-    public final void remove() {
-      System.err.println("Edge list does not support remove an edge");
-    }
+		public Builder end(int end) {
+			this.end = end;
+			return this;
+		}
 
-    /** The current position index of the iterator. */
-    int cur;
-    /** The list to be iterate. */
-    EdgeList list;
-  }
+		public Builder dir(EdgeType.DIR dir) {
+			this.dir = dir;
+			return this;
+		}
+	}
 
-  /**
-   * Comparator of two EdgeType based on the numeric ordering of the center of
-   * the edge.
-   * 
-   * @author Haijie Gu
-   * @param <EdgeType>
-   *          type of the elements to be compared with.
-   */
-  public class EdgeTypeComparator implements Comparator<EdgeType> {
-    @Override
-    public final int compare(EdgeType arg0, EdgeType arg1) {
-      return ((Integer) (arg0.connected)).compareTo(arg1.connected);
-    }
-  }
+	/**
+	 * @return the size of the list.
+	 */
+	public int size() {
+		return end - begin;
+	}
 
-  /** Index of the center vertex in the storage. */
-  int center;
-  /** The begin and end index indicating the range of the edges. */
-  int begin, end;
-  /** The direction of the edges with respect to the center vertex. */
-  EdgeType.DIR dir;
-  /** The back end dense storage of the edges. */
-  SparseGraphStruct store;
+	/**
+	 * @return wheter the list is empty.
+	 */
+	public boolean isEmpty() {
+		return size() == 0;
+	}
+
+	@Override
+	public Iterator<EdgeType> iterator() {
+		return new EdgeIterator(this);
+	}
+
+	/**
+	 * This iterator iterates lazily over the {@code EdgeList}.
+	 * 
+	 * @author Haijie Gu
+	 */
+	public class EdgeIterator implements Iterator<EdgeType> {
+		/** Create an the begin iterator of the list. */
+		EdgeIterator(EdgeList list) {
+			this.list = list;
+			this.cur = list.begin;
+		}
+
+		@Override
+		public final boolean hasNext() {
+			return (list != null && cur < list.end);
+		}
+
+		@Override
+		public final EdgeType next() {
+			EdgeType ret = new EdgeType(list.center, list.store.getColIndex().get(cur), cur, list.dir);
+			++cur;
+			return ret;
+		}
+
+		@Override
+		public final void remove() {
+			System.err.println("Edge list does not support remove an edge");
+		}
+
+		/** The current position index of the iterator. */
+		int cur;
+		/** The list to be iterate. */
+		EdgeList list;
+	}
+
+	/**
+	 * Comparator of two EdgeType based on the numeric ordering of the center of the
+	 * edge.
+	 * 
+	 * @author Haijie Gu
+	 * @param <EdgeType> type of the elements to be compared with.
+	 */
+	public class EdgeTypeComparator implements Comparator<EdgeType> {
+		@Override
+		public final int compare(EdgeType arg0, EdgeType arg1) {
+			return ((Integer) (arg0.connected)).compareTo(arg1.connected);
+		}
+	}
+
+	/** Index of the center vertex in the storage. */
+	int center;
+	/** The begin and end index indicating the range of the edges. */
+	int begin, end;
+	/** The direction of the edges with respect to the center vertex. */
+	EdgeType.DIR dir;
+	/** The back end dense storage of the edges. */
+	SparseGraphStruct store;
 }
