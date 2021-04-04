@@ -42,220 +42,209 @@ import com.intel.hadoop.graphbuilder.types.StringType;
  * @author Haijie Gu
  */
 public class TransformToTFIDF {
-	private static final Logger LOG = Logger.getLogger(TransformToTFIDF.class);
+  private static final Logger LOG = Logger.getLogger(TransformToTFIDF.class);
 
-	/**
-	 * f : tf * df -> tfidf
-	 * 
-	 * @author Haijie Gu
-	 *
-	 */
-	public final static class IDFfunc implements Functional<FloatType, FloatType> {
-		@Override
-		public FloatType reduce(FloatType a, FloatType b) {
-			return new FloatType(a.get() * (float) Math.log10(numDocs / b.get()));
-		}
+  /**
+   * f : tf * df -> tfidf
+   * 
+   * @author Haijie Gu
+   *
+   */
+  public final static class IDFfunc implements Functional<FloatType, FloatType> {
+    @Override
+    public FloatType reduce(FloatType a, FloatType b) {
+      return new FloatType(a.get() * (float) Math.log10(numDocs / b.get()));
+    }
 
-		@Override
-		public void configure(JobConf job) throws Exception {
-			if (job.get("NumDocs").isEmpty()) {
-				throw new Exception("NumDocs is required for IDF functional");
-			}
-			numDocs = job.getInt("NumDocs", 0);
-		}
+    @Override
+    public void configure(JobConf job) throws Exception {
+      if (job.get("NumDocs").isEmpty()) {
+        throw new Exception("NumDocs is required for IDF functional");
+      }
+      numDocs = job.getInt("NumDocs", 0);
+    }
 
-		@Override
-		public Class<FloatType> getInType() {
-			return FloatType.class;
-		}
+    @Override
+    public Class<FloatType> getInType() {
+      return FloatType.class;
+    }
 
-		@Override
-		public Class<FloatType> getOutType() {
-			return FloatType.class;
-		}
+    @Override
+    public Class<FloatType> getOutType() {
+      return FloatType.class;
+    }
 
-		@Override
-		public FloatType base() {
-			return FloatType.ONE;
-		}
+    @Override
+    public FloatType base() {
+      return FloatType.ONE;
+    }
 
-		private int numDocs;
-	}
+    private int numDocs;
+  }
 
-	/**
-	 * f : x * y -> x + y
-	 * 
-	 * @author Haijie Gu
-	 *
-	 */
-	public final static class Sumfunc implements Functional<IntType, FloatType> {
-		@Override
-		public void configure(JobConf job) throws Exception {
-		}
+  /**
+   * f : x * y -> x + y
+   * 
+   * @author Haijie Gu
+   *
+   */
+  public final static class Sumfunc implements Functional<IntType, FloatType> {
+    @Override
+    public void configure(JobConf job) throws Exception {
+    }
 
-		@Override
-		public FloatType reduce(IntType a, FloatType b) {
-			return new FloatType((float) a.get() + b.get());
-		}
+    @Override
+    public FloatType reduce(IntType a, FloatType b) {
+      return new FloatType((float) a.get() + b.get());
+    }
 
-		@Override
-		public Class<IntType> getInType() {
-			return IntType.class;
-		}
+    @Override
+    public Class<IntType> getInType() {
+      return IntType.class;
+    }
 
-		@Override
-		public Class<FloatType> getOutType() {
-			return FloatType.class;
-		}
+    @Override
+    public Class<FloatType> getOutType() {
+      return FloatType.class;
+    }
 
-		@Override
-		public FloatType base() {
-			return FloatType.ZERO;
-		}
+    @Override
+    public FloatType base() {
+      return FloatType.ZERO;
+    }
 
-	}
+  }
 
-	/**
-	 * f : x * y -> x / y
-	 */
-	public final static class Dividefunc implements Functional<IntType, FloatType> {
+  /**
+   * f : x * y -> x / y
+   */
+  public final static class Dividefunc implements Functional<IntType, FloatType> {
 
-		@Override
-		public void configure(JobConf job) throws Exception {
-		}
+    @Override
+    public void configure(JobConf job) throws Exception {
+    }
 
-		@Override
-		public FloatType reduce(IntType a, FloatType b) {
-			return new FloatType((float) a.get() / b.get());
-		}
+    @Override
+    public FloatType reduce(IntType a, FloatType b) {
+      return new FloatType((float) a.get() / b.get());
+    }
 
-		@Override
-		public Class<IntType> getInType() {
-			return IntType.class;
-		}
+    @Override
+    public Class<IntType> getInType() {
+      return IntType.class;
+    }
 
-		@Override
-		public Class<FloatType> getOutType() {
-			return FloatType.class;
-		}
+    @Override
+    public Class<FloatType> getOutType() {
+      return FloatType.class;
+    }
 
-		@Override
-		public FloatType base() {
-			return FloatType.ONE;
-		}
+    @Override
+    public FloatType base() {
+      return FloatType.ONE;
+    }
 
-	}
+  }
 
-	/**
-	 * f : x * y -> y + 1
-	 * 
-	 * @author Haijie Gu
-	 *
-	 */
-	public final static class FloatCountFunc implements Functional<FloatType, FloatType> {
+  /**
+   * f : x * y -> y + 1
+   * 
+   * @author Haijie Gu
+   *
+   */
+  public final static class FloatCountFunc implements Functional<FloatType, FloatType> {
 
-		@Override
-		public void configure(JobConf job) throws Exception {
-		}
+    @Override
+    public void configure(JobConf job) throws Exception {
+    }
 
-		@Override
-		public FloatType reduce(FloatType a, FloatType b) {
-			return new FloatType(b.get() + 1);
-		}
+    @Override
+    public FloatType reduce(FloatType a, FloatType b) {
+      return new FloatType(b.get() + 1);
+    }
 
-		@Override
-		public Class<FloatType> getInType() {
-			return FloatType.class;
-		}
+    @Override
+    public Class<FloatType> getInType() {
+      return FloatType.class;
+    }
 
-		@Override
-		public Class<FloatType> getOutType() {
-			return FloatType.class;
-		}
+    @Override
+    public Class<FloatType> getOutType() {
+      return FloatType.class;
+    }
 
-		@Override
-		public FloatType base() {
-			return FloatType.ZERO;
-		}
+    @Override
+    public FloatType base() {
+      return FloatType.ZERO;
+    }
 
-	}
+  }
 
-	class JobTF extends AbstractEdgeTransformJob<StringType, IntType, FloatType> {
+  class JobTF extends AbstractEdgeTransformJob<StringType, IntType, FloatType> {
 
-		@Override
-		public Class vidClass() {
-			return StringType.class;
-		}
+    @Override
+    public Class vidClass() {
+      return StringType.class;
+    }
 
-		@Override
-		public Class edataClass() {
-			return IntType.class;
-		}
+    @Override
+    public Class edataClass() {
+      return IntType.class;
+    }
 
-		@Override
-		public Functional<IntType, FloatType> reduceFunction() {
-			return new Sumfunc();
-		}
+    @Override
+    public Functional<IntType, FloatType> reduceFunction() {
+      return new Sumfunc();
+    }
 
-		@Override
-		public Functional<IntType, FloatType> applyFunction() {
-			return new Dividefunc();
-		}
-	}
+    @Override
+    public Functional<IntType, FloatType> applyFunction() {
+      return new Dividefunc();
+    }
+  }
 
-	class JobTFIDF extends AbstractEdgeTransformJob<StringType, FloatType, FloatType> {
-		public Class vidClass() {
-			return StringType.class;
-		}
+  class JobTFIDF extends AbstractEdgeTransformJob<StringType, FloatType, FloatType> {
+    public Class vidClass() {
+      return StringType.class;
+    }
 
-		public Class edataClass() {
-			return FloatType.class;
-		}
+    public Class edataClass() {
+      return FloatType.class;
+    }
 
-		public Functional<FloatType, FloatType> reduceFunction() {
-			return new FloatCountFunc();
-		}
+    public Functional<FloatType, FloatType> reduceFunction() {
+      return new FloatCountFunc();
+    }
 
-		public Functional<FloatType, FloatType> applyFunction() {
-			return new IDFfunc();
-		}
-	}
+    public Functional<FloatType, FloatType> applyFunction() {
+      return new IDFfunc();
+    }
+  }
 
-//  class AbstractEdgeTransformJobFactory {
-//    public AbstractEdgeTransformJob getJobType(String jobType) {
-//      if (jobType == "JobTF") {
-//        return new TransformToTFIDF().new JobTF();
-//      } else if (jobType == "jobTFIDF") {
-//        return new TransformToTFIDF().new JobTFIDF();
-//      }
-//    }
-//    // new TransformToTFIDF().new JobTF()
-//  }
-
-	public static void main(String[] args) throws IOException, NotFoundException, InstantiationException,
-			IllegalAccessException, CannotCompileException {
-		String numDocs = args[0];
-		String input = args[1];
-		String output = args[2];
-		AbstractEdgeTransformJobFactory factory = new AbstractEdgeTransformJobFactory();
-		LOG.info(" ================ Computing TF ===================");
-		String jobType = "JobTF";
-		AbstractEdgeTransformJob job1 = factory.getJobType(jobType);
-		job1.run(EdgeTransformMR.SOURCE, input + "/edata", output + "/temp");
-		jobType = "JobTFIDF";
-		// AbstractEdgeTransformJob job2 = new TransformToTFIDF().new JobTFIDF();
-		AbstractEdgeTransformJob job2 = factory.getJobType(jobType);
-		LOG.info(" ================== Compute TFIDF =======================");
-		job2.addUserOpt("NumDocs", numDocs);
-		job2.run(EdgeTransformMR.TARGET, output + "/temp", output + "/edata");
-		LOG.info("Done");
-		LOG.info("Moving vdata from " + input + " to " + output);
-		try {
-			FileSystem fs = FileSystem.get(new JobConf(TransformToTFIDF.class));
-			fs.rename(new Path(input + "/vdata"), new Path(output + "/vdata"));
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
-	}
+  public static void main(String[] args)
+      throws IOException, NotFoundException, InstantiationException, IllegalAccessException, CannotCompileException {
+    String numDocs = args[0];
+    String input = args[1];
+    String output = args[2];
+    AbstractEdgeTransformJobFactory factory = new AbstractEdgeTransformJobFactory();
+    LOG.info(" ================ Computing TF ===================");
+    String jobType = "JobTF";
+    AbstractEdgeTransformJob job1 = factory.getJobType(jobType);
+    job1.run(EdgeTransformMR.SOURCE, input + "/edata", output + "/temp");
+    jobType = "JobTFIDF";
+    // AbstractEdgeTransformJob job2 = new TransformToTFIDF().new JobTFIDF();
+    AbstractEdgeTransformJob job2 = factory.getJobType(jobType);
+    LOG.info(" ================== Compute TFIDF =======================");
+    job2.addUserOpt("NumDocs", numDocs);
+    job2.run(EdgeTransformMR.TARGET, output + "/temp", output + "/edata");
+    LOG.info("Done");
+    LOG.info("Moving vdata from " + input + " to " + output);
+    try {
+      FileSystem fs = FileSystem.get(new JobConf(TransformToTFIDF.class));
+      fs.rename(new Path(input + "/vdata"), new Path(output + "/vdata"));
+    } catch (IOException e) {
+      e.printStackTrace();
+    }
+  }
 
 }
