@@ -221,17 +221,6 @@ public class TransformToTFIDF {
     }
   }
 
-  class AbstractEdgeTransformJobFactory {
-    public AbstractEdgeTransformJob getJobType(String jobType) {
-      if (jobType == "JobTF") {
-        return new TransformToTFIDF().new JobTF();
-      } else if (jobType == "jobTFIDF") {
-        return new TransformToTFIDF().new JobTFIDF();
-      }
-    }
-    // new TransformToTFIDF().new JobTF()
-  }
-
   public static void main(String[] args)
       throws IOException, NotFoundException, InstantiationException, IllegalAccessException, CannotCompileException {
     String numDocs = args[0];
