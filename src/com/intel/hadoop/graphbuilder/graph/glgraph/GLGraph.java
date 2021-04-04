@@ -74,21 +74,19 @@ public class GLGraph<VidType, VertexData, EdgeData> implements
       return null;
     } else if (e.direction == EdgeType.DIR.IN) {
       return edatalist.get(c2rMap.get(e.edgeid()));
-    } else {
-      return edatalist.get(e.edgeid());
-    }
-  }
+	} else {
+		return edatalist.get(e.edgeid());
+	}
+}
 
-  /**
-   * @param e
-   *          The lazy edge object.
-   * @param value
-   *          the new edge data.
-   * @return the new edge data of EdgeType e.
-   */
-  public EdgeData setEdgeData(EdgeType e, EdgeData value) {
-    if (e.direction == EdgeType.DIR.EMPTY) {
-      return null;
+/**
+ * @param e     The lazy edge object.
+ * @param value the new edge data.
+ * @return the new edge data of EdgeType e.
+ */
+public EdgeData setEdgeData(EdgeType e, EdgeData value) {
+	if (e.direction == EdgeType.DIR.EMPTY) {
+		return null;
     } else if (e.direction == EdgeType.DIR.IN) {
       return edatalist.set(c2rMap.get(e.edgeid()), value);
     } else {

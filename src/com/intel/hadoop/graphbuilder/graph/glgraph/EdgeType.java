@@ -19,50 +19,50 @@
 package com.intel.hadoop.graphbuilder.graph.glgraph;
 
 public class EdgeType {
-  public enum DIR {
-    IN, OUT, EMPTY
-  };
+	public enum DIR {
+		IN, OUT, EMPTY
+	};
 
-  public EdgeType() {
-    center = -1;
-    connected = -1;
-    edgeid = -1;
-    direction = DIR.EMPTY;
-  }
+	public EdgeType() {
+		center = -1;
+		connected = -1;
+		edgeid = -1;
+		direction = DIR.EMPTY;
+	}
 
-  public EdgeType(int center, int connected, int edgeid, DIR direction) {
-    this.center = center;
-    this.connected = connected;
-    this.direction = direction;
-    this.edgeid = edgeid;
-  }
+	public EdgeType(int center, int connected, int edgeid, DIR direction) {
+		this.center = center;
+		this.connected = connected;
+		this.direction = direction;
+		this.edgeid = edgeid;
+	}
 
-  public int source() {
-    if (direction == DIR.IN) {
-      return connected;
-    } else if (direction == DIR.OUT) {
-      return center;
-    } else {
-      return -1;
-    }
-  }
+	public int source() {
+		if (direction == DIR.IN) {
+			return connected;
+		} else if (direction == DIR.OUT) {
+			return center;
+		} else {
+			return -1;
+		}
+	}
 
-  public int target() {
-    if (direction == DIR.IN) {
-      return center;
-    } else if (direction == DIR.OUT) {
-      return connected;
-    } else {
-      return -1;
-    }
-  }
+	public int target() {
+		if (direction == DIR.IN) {
+			return center;
+		} else if (direction == DIR.OUT) {
+			return connected;
+		} else {
+			return -1;
+		}
+	}
 
-  public int edgeid() {
-    return edgeid;
-  }
+	public int edgeid() {
+		return edgeid;
+	}
 
-  int center;
-  int connected;
-  int edgeid;
-  DIR direction;
+	int center;
+	int connected;
+	int edgeid;
+	DIR direction;
 }
