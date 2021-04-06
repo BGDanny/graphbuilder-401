@@ -36,19 +36,6 @@ import java.util.Iterator;
 public class EdgeList implements Iterable<EdgeType> {
 
 	/**
-	 * Default constructor. Creates an empty edge list.
-	 * 
-	 * @param builder
-	 */
-	public EdgeList(Builder builder) {
-		this.store = builder.store;
-		this.begin = builder.begin;
-		this.dir = builder.dir;
-		this.end = builder.end;
-		this.center = builder.center;
-	}
-
-	/**
 	 * Construct an EdgeList containing all edges in the {@code SparseGraphStruct}
 	 * that are incoming (outgoing) edges with respect to the given vertex. The
 	 * direction is determined by the parameter {@code dir}.
@@ -63,6 +50,18 @@ public class EdgeList implements Iterable<EdgeType> {
 		this.begin = store.begin(vid);
 		this.end = store.end(vid);
 		this.dir = dir;
+	}
+
+	public EdgeList(int vid, SparseGraphStruct store, EdgeType.DIR dir, int center, int end) {
+
+	}
+
+	public EdgeList(Builder builder) {
+		this.store = builder.store;
+		this.begin = builder.begin;
+		this.dir = builder.dir;
+		this.end = builder.end;
+		this.center = builder.center;
 	}
 
 	public static class Builder {
@@ -184,12 +183,13 @@ public class EdgeList implements Iterable<EdgeType> {
 	EdgeType.DIR dir;
 	/** The back end dense storage of the edges. */
 	SparseGraphStruct store;
-
+	
+	
 	public static void main(String[] args) {
-		EdgeList ed = new EdgeList(1, null, EdgeType.DIR.IN);
-
+		EdgeList ed = new EdgeList(1, null, EdgeType.DIR.IN, -1, -1);
+		
 		EdgeList.Builder e = new EdgeList.Builder();
-		EdgeList ed2 = e.center(2).dir(EdgeType.DIR.IN).build();
+		EdgeList ed2 = e.center(1).dir(EdgeType.DIR.IN).build();
 
 	}
 }
