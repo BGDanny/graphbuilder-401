@@ -35,12 +35,17 @@ import java.util.Iterator;
  */
 public class EdgeList implements Iterable<EdgeType> {
 
-	/** Default constructor. Creates an empty edge list. */
-	public EdgeList() {
-		this.store = null;
-		this.begin = -1;
-		this.end = -1;
-		this.dir = EdgeType.DIR.EMPTY;
+	/**
+	 * Default constructor. Creates an empty edge list.
+	 * 
+	 * @param builder
+	 */
+	public EdgeList(Builder builder) {
+		this.store = builder.store;
+		this.begin = builder.begin;
+		this.dir = builder.dir;
+		this.end = builder.end;
+		this.center = builder.center;
 	}
 
 	/**
@@ -96,6 +101,10 @@ public class EdgeList implements Iterable<EdgeType> {
 		public Builder dir(EdgeType.DIR dir) {
 			this.dir = dir;
 			return this;
+		}
+
+		public EdgeList build() {
+			return new EdgeList(this);
 		}
 	}
 
@@ -175,4 +184,12 @@ public class EdgeList implements Iterable<EdgeType> {
 	EdgeType.DIR dir;
 	/** The back end dense storage of the edges. */
 	SparseGraphStruct store;
+
+	public static void main(String[] args) {
+		EdgeList ed = new EdgeList(1, null, EdgeType.DIR.IN);
+
+		EdgeList.Builder e = new EdgeList.Builder();
+		EdgeList ed2 = e.center(2).dir(EdgeType.DIR.IN).build();
+
+	}
 }
