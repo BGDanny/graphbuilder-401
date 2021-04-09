@@ -14,7 +14,7 @@ import com.intel.hadoop.graphbuilder.graph.glgraph.GLGraph;
 import com.intel.hadoop.graphbuilder.graph.glgraph.GLJsonFormatter;
 import com.intel.hadoop.graphbuilder.io.MultiDirOutputFormat;
 
-public class GLGGraphOutput extends GraphResult {
+public class GLGraphOutput extends GraphResult {
 
 	@Override
 	public final void init(JobConf conf) {

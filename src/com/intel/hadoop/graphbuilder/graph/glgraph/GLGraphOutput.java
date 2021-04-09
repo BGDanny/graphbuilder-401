@@ -61,20 +61,17 @@ public class GLGraphOutput implements GraphOutput {
   }
 
   @Override
-  public final void write(Graph g, EdgeFormatter formatter,
-      OutputCollector out, Reporter reporter) throws Exception {
+  public final void write(Graph g, EdgeFormatter formatter, OutputCollector out, Reporter reporter) throws Exception {
 
     int pid = g.pid();
 
     /* Output vid2lvidmap. */
     LOG.info("Collecting vid2lvid: " + pid);
-    StringWriter vid2lvidWriter = ((GLJsonFormatter) formatter)
-        .vid2lvidWriter((GLGraph) g);
+    StringWriter vid2lvidWriter = ((GLJsonFormatter) formatter).vid2lvidWriter((GLGraph) g);
     if (clearAfterWrite)
       ((GLGraph) g).vid2lvid().clear();
 
-    out.collect(new Text("partition" + pid + "/vid2lvid"), new Text(
-        vid2lvidWriter.toString()));
+    out.collect(new Text("partition" + pid + "/vid2lvid"), new Text(vid2lvidWriter.toString()));
     vid2lvidWriter.close();
     LOG.info("Done collecting vid2lvid: " + pid);
 
@@ -85,13 +82,11 @@ public class GLGraphOutput implements GraphOutput {
 
     /* Output edge data. */
     LOG.info("Collecting edata: " + pid);
-    StringWriter edataWriter = ((GLJsonFormatter) formatter)
-        .edataWriter((GLGraph) g);
+    StringWriter edataWriter = ((GLJsonFormatter) formatter).edataWriter((GLGraph) g);
     if (clearAfterWrite)
       ((GLGraph) g).edatalist().clear();
 
-    out.collect(new Text("partition" + pid + "/edata"),
-        new Text(edataWriter.toString()));
+    out.collect(new Text("partition" + pid + "/edata"), new Text(edataWriter.toString()));
     edataWriter.close();
     LOG.info("Done collecting edata: " + pid);
 
@@ -99,8 +94,7 @@ public class GLGraphOutput implements GraphOutput {
     LOG.info("Collecting graph structure: " + pid);
     StringWriter structureWriter = formatter.structWriter(g);
 
-    out.collect(new Text("partition" + pid + "/structure"), new Text(
-        structureWriter.toString()));
+    out.collect(new Text("partition" + pid + "/structure"), new Text(structureWriter.toString()));
     if (clearAfterWrite)
       g.clear();
     structureWriter.close();
@@ -108,8 +102,8 @@ public class GLGraphOutput implements GraphOutput {
   }
 
   @Override
-  public final void writeAndClear(Graph g, EdgeFormatter formatter,
-      OutputCollector out, Reporter reporter) throws Exception {
+  public final void writeAndClear(Graph g, EdgeFormatter formatter, OutputCollector out, Reporter reporter)
+      throws Exception {
     clearAfterWrite = true;
     write(g, formatter, out, reporter);
   }
